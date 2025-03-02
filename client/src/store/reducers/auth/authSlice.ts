@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface User {
-    _id: string,
     email: string,
     name: string,
     password?: string,
@@ -20,9 +19,7 @@ const initialState: LoginState = {
     status: "idle",
 }
 
-export const signIn = createAsyncThunk<User, {
-    email: string; password: string,
-}>(
+export const signIn = createAsyncThunk<User, { email: string; password: string}>(
     "auth/signIn",
     async (data: {
         email: string; password: string,
@@ -39,9 +36,6 @@ export const signIn = createAsyncThunk<User, {
             throw new Error(`Ошибка: ${response.status}`);
         }
         const json = await response.json()
-
-        // if (data.onSuccess) data.onSuccess();
-
         return json
     }
 )
