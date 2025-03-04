@@ -1,7 +1,7 @@
 import "./styles.css";
 interface ModalLayoutProps {
-	title: string;
-	onClose: () => void;
+	title?: string;
+	onClose?: () => void;
 	children: React.ReactNode;
 }
 const ModalLayout: React.FC<ModalLayoutProps> = (props) => {
