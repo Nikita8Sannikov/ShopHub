@@ -1,26 +1,43 @@
-// import { useSelector } from 'react-redux';
-import SideLayout from '../sideLayout'
-// import { RootState } from '@/store';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+
+import { RootState } from '@/store';
+
 import { Input } from "@/components/ui/input"
-// import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Button } from "@/components/ui/button";
 import { PopoverAvatar } from '../popoverAvatar';
 import { AuthSheet } from '../authSheet';
+import SideLayout from '../sideLayout'
+import BasketTool from '../basketTool';
 
-const Header = () => {
-    // const user = useSelector((state: RootState) => state.auth.user);
+
+interface HeaderProps {
+    search?: string
+    setSearch?: (e: string) => void
+}
+
+const Header = ({ search, setSearch }: HeaderProps) => {
+    const { id } = useParams();
+    const isAuth = useSelector((state: RootState) => state.auth.exists);
     return (
         <header className="p-5 text-center bg-black text-white rounded-b-xl shadow-xl">
             <SideLayout side="between">
                 <div className="font-black">
                     $HO₽_HU₿
                 </div>
-                <div                >
-                    <Input type="" placeholder="Я ищу.." />
-                </div>
-                <AuthSheet/>
+                {!id && 
+                    <div>
+                        <Input type="text"
+                            placeholder="Я ищу.."
+                            value={search}
+                            onChange={(e) => setSearch?.(e.target.value)}
+                        // className="w-80"
+                        />
+                    </div>
+                }
+
+                {!isAuth && <AuthSheet />}
                 <div className='flex'>
-                    <Button  onClick={()=> console.log('тык')}>Корзина</Button>
+                    <BasketTool/>
                     <PopoverAvatar />
                 </div>
 
