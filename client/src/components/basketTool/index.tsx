@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 
 import { RootState } from "@/store";
 
-import { DialogDemo } from "../dialog";
+import { BasketDialog } from "../basketDialog";
 import { Separator } from "../ui/separator";
 
 
@@ -13,15 +13,13 @@ const BasketTool = () => {
     return (
         <>
             <div className="flex flex-col">
-                <DialogDemo />
+                <BasketDialog />
                 {isAuth &&
-
                     <div className="flex h-5  justify-center space-x-2">
                         <div>Товаров в корзине: {items.length} </div>
                         <Separator orientation="vertical" />
                         <div>  Итого: ${totalPrice}</div>
                     </div>
-
                 }
             </div>
         </>
