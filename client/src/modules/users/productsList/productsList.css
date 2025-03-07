@@ -1,0 +1,12 @@
+.user-name {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.user-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	gap: 20px;
+	padding: 20px;
+	width: 120%;
+}

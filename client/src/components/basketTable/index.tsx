@@ -12,8 +12,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { AppDispatch, RootState } from "@/store";
-import { removeItem } from "@/store/reducers/cart/cartSlice";
-import { closeModal } from "@/store/reducers/modal/modalSlice";
+import { addItem, removeItem, removeItemAll } from "@/store/reducers/cart/cartSlice";
 import { Product } from "@/types/types";
 import { Button } from "../ui/button";
 
@@ -27,14 +26,20 @@ export function BasketTable({ onClose }: BasketTableProps) {
     const dispatch: AppDispatch = useDispatch();
 
     const callbacks = {
-        onClose: () => {
-            dispatch(closeModal());
-        },
+        onAdd:
+            (item: Product) => {
+                dispatch(addItem(item));
+            },
         removeItem:
             (item: Product) => {
                 console.log(`Удаление товара ${JSON.stringify(item.title)}`);
                 dispatch(removeItem(item));
             },
+            removeItemAll:
+            (item: Product) => {
+                console.log(`Удаление товара ${JSON.stringify(item.title)}`);
+                dispatch(removeItemAll(item));
+            }
     };
 
     return (
@@ -57,9 +62,14 @@ export function BasketTable({ onClose }: BasketTableProps) {
                             <TableCell className="font-medium">{item.title}</TableCell>
                         </Link>
                         <TableCell>${item.price}</TableCell>
-                        <TableCell>{item.amount}шт.</TableCell>
+                        <TableCell>
+                            <Button onClick={() => callbacks.removeItem(item)}>-</Button>
+                            {item.amount}шт.
+                            <Button onClick={() => callbacks.onAdd(item)}>+</Button>
+                        </TableCell>
+
                         <TableCell className="text-right">${item.price * item.amount}</TableCell>
-                        <TableCell className="text-right"><Button onClick={() => callbacks.removeItem(item)}>Удалить</Button></TableCell>
+                        <TableCell className="text-right"><Button onClick={() => callbacks.removeItemAll(item)}>Удалить</Button></TableCell>
                     </TableRow>
                 ))}
             </TableBody>

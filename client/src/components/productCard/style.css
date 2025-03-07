@@ -1,0 +1,25 @@
+.user-card {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	text-align: center;
+	padding: 20px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.user-card:hover {
+	transform: scale(1.05);
+	border: 1px solid black;
+}
+
+.avatar {
+	border-radius: 50%;
+	width: 100px;
+	height: 100px;
+}
+
+.name {
+	margin-top: 10px;
+	font-size: 1.2rem;
+	color: #333;
+}

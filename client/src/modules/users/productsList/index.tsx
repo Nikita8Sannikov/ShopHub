@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AppDispatch, RootState } from "../../../store";
-import { addItem, fetchProducts } from "@/store/reducers/cart/cartSlice";
+import { addItem, fetchProducts, removeItem } from "@/store/reducers/cart/cartSlice";
 import { openModal } from "@/store/reducers/modal/modalSlice";
 import { Product } from "@/types/types";
 
@@ -10,10 +10,7 @@ import Header from "@/components/header";
 import ProductCard from "@/components/productCard";
 import PageLayout from "@/components/page-layout";
 import CardGrid from "@/components/CardGrid";
-import BasketTool from "@/components/basketTool";
 import { TabsCategory } from "@/components/tabsCategory";
-import { DialogDemo } from "@/components/dialog";
-
 
 import "./productsList.css";
 
@@ -46,6 +43,11 @@ const ProductsList: React.FC = () => {
 			(item: Product) => {
 				dispatch(addItem(item));
 			},
+		removeItem:
+			(item: Product) => {
+				console.log(`Удаление товара ${JSON.stringify(item.title)}`);
+				dispatch(removeItem(item));
+			},
 	};
 
 	const renders = {
@@ -54,7 +56,8 @@ const ProductsList: React.FC = () => {
 				return (
 					<ProductCard
 						product={item}
-						callback={callbacks.onAdd}
+						onAdd={callbacks.onAdd}
+						onRemove={callbacks.removeItem}
 						link={`/products/${item.id}`}
 					/>
 				);
@@ -68,10 +71,8 @@ const ProductsList: React.FC = () => {
 			<Header
 				search={search}
 				setSearch={setSearch}
-			>
-				<BasketTool callback={callbacks.onOpen} />
-				{/* <DialogDemo /> */}
-			</Header>
+			/>
+			<div className="flex mt-[130px]">
 			<TabsCategory setActiveCategory={setActiveCategory} />
 			{status === "succeeded" && (
 				filteredProducts.length > 0
@@ -80,6 +81,8 @@ const ProductsList: React.FC = () => {
 					:
 					<p className="col-span-3 text-center text-gray-500">Товар не найден</p>
 			)}
+			</div>
+			
 		</PageLayout>
 	);
 };
