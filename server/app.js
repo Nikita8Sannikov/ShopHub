@@ -2,7 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import cookieParser from 'cookie-parser'
 import authRoutes from "./routes/auth.routes.js";
-import usersRoutes from "./routes/users.routes.js";
+// import usersRoutes from "./routes/users.routes.js";
+import goodsRoutes from "./routes/goods.routes.js";
 import finalConfig from "./config/index.js";
 
 const app = express();
@@ -12,7 +13,8 @@ app.use(express.urlencoded({ extended: true })); // Миддлвар для об
 app.use(cookieParser()); //Мидлвар cookie-parser разбирает cookies и делает их доступными через req.cookies
 
 app.use("/api/auth", authRoutes);
-app.use("/api/users", usersRoutes);
+// app.use("/api/users", usersRoutes);
+app.use("/api/goods", goodsRoutes);
 
 const PORT = process.env.PORT || 5000
 
