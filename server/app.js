@@ -16,6 +16,9 @@ app.use("/api/auth", authRoutes);
 // app.use("/api/users", usersRoutes);
 app.use("/api/goods", goodsRoutes);
 
+//раздаём папку "uploads" как статические файлы
+app.use("/uploads", express.static("uploads"));
+
 const PORT = process.env.PORT || 5000
 
 async function start() {

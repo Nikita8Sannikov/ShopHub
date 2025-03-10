@@ -1,5 +1,7 @@
 import { Router } from "express";
 import Goods from "../models/Goods.js";
+import { upload } from "../middleware/upload.js";
+import { createProduct } from "../controllers/goods.controller.js";
 
 const router = Router();
 
@@ -89,25 +91,26 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
+router.post("/create", upload.single("image"), createProduct);
 // /api/goods/create
-router.post("/create", async (req, res) => {
-    try {
-        const {title, category, description, price, rating, image} = req.body;
+// router.post("/create", async (req, res) => {
+//     try {
+//         const {title, category, description, price, rating, image} = req.body;
 
-        const good = new Goods({
-            title,
-            category,
-            description,
-            price,
-            rating,
-            image
-        });
-        await good.save();
-        res.status(201).json(good);
-    } catch (e) {
-        res.status(500).json({
-            message: "Smth wrong, try again",
-            error: e.message,
-        });
-    }
-});
+//         const good = new Goods({
+//             title,
+//             category,
+//             description,
+//             price,
+//             rating,
+//             image
+//         });
+//         await good.save();
+//         res.status(201).json(good);
+//     } catch (e) {
+//         res.status(500).json({
+//             message: "Smth wrong, try again",
+//             error: e.message,
+//         });
+//     }
+// });
