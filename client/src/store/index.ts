@@ -3,6 +3,7 @@ import usersReducer from './reducers/users/usersSlice'
 import authSlice from './reducers/auth/authSlice'
 import cartReducer from './reducers/cart/cartSlice'
 import modalReducer from './reducers/modal/modalSlice'
+import goodsSlice from './reducers/goods/goodsSlice'
 
 const loggerMiddleware: Middleware = (storeAPI) => (next) => (action: unknown) => {
     const actionType = (action as { type?: string }).type ?? 'unknown action';
@@ -26,6 +27,7 @@ export const store = configureStore({
         auth: authSlice,
         cart: cartReducer,
         modal: modalReducer,
+        goods: goodsSlice,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(loggerMiddleware)
 })

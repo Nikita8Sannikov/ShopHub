@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { RootState } from "../../../store";
-import { updateProducts } from "@/store/reducers/cart/cartSlice";
+import { AppDispatch, RootState } from "../../../store";
+import { createProduct, fetchGoodsById, updateProduct } from "@/store/reducers/goods/goodsSlice";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,16 +14,17 @@ import "./edit.css";
 
 interface IForm {
 	title: string;
-    category: string;
-    description: string;
-    price: string;
-    rating: string;
-    image: File | null;
+	category: string;
+	description: string;
+	price: number;
+	rating: number;
+	image: File | null;
 }
 
 const EditProductsProfile = () => {
 	//получаем id продукта
 	const { id } = useParams();
+	const dispatch: AppDispatch = useDispatch();
 	const navigate = useNavigate();
 	//получаем юзера чтобы проверить админ ли он
 	const user = useSelector((state: RootState) => state.auth.user)
@@ -33,8 +34,8 @@ const EditProductsProfile = () => {
 		title: "",
 		category: "",
 		description: "",
-		price: "",
-		rating: "",
+		price: 0,
+		rating: 0,
 		image: null
 	});
 
@@ -53,25 +54,28 @@ const EditProductsProfile = () => {
 		}
 	};
 
-	//функция для получения продукта и заполнения полей при редактировании
-	const fetchGoods = async () => {
-		const response = await fetch(`/api/goods/${id}`);
-		const data = await response.json();
-		setForm({
-			title: data.title || "",
-			category: data.category || "",
-			description: data.description || "",
-			price: data.price || "",
-			rating: data.rating || "",
-			image: data.image || null,
-		});
-	};
+	const handleFetchGoodId = async () => {
+		try {
+			const data = await dispatch(fetchGoodsById(id!)).unwrap()
+
+			setForm({
+				title: data.title || "",
+				category: data.category || "",
+				description: data.description || "",
+				price: data.price || 0,
+				rating: data.rating || 0,
+				image: data.image || null,
+			});
+		} catch (error) {
+			console.error("Failed to fetch goods:", error);
+		}
+	}
 
 	//вызываем fetchGoods при редактировании то есть когда существует id чтобы
 	//поля заполнились текущими значениями
 	useEffect(() => {
-		if(id){
-			fetchGoods();
+		if (id) {
+			handleFetchGoodId()
 		}
 	}, [id]);
 
@@ -80,42 +84,31 @@ const EditProductsProfile = () => {
 		e.preventDefault();
 
 		const formData = new FormData();
-	
+
 		formData.append("title", form.title);
 		formData.append("category", form.category);
 		formData.append("description", form.description);
-		formData.append("price", form.price);
-		formData.append("rating", form.rating);
+		formData.append("price", form.price.toString());
+		formData.append("rating", form.rating.toString());
 		if (form.image) {
-		  formData.append("image", form.image); // Добавляем изображение
+			formData.append("image", form.image);
 		}
 
-		const method = id ? "PATCH" : "POST"; 
-		const url = id ? `/api/goods/${id}` : "/api/goods/create";
+		try{
+			let result;
 
-		const response = await fetch(url, {
-			method,
-			body: formData,
-		});
-
-		// const response = await fetch(`/api/goods/${id}`, {
-		// 	method: "PATCH",
-		// 	headers: { "Content-Type": "application/json" },
-		// 	body: JSON.stringify(form),
-		// });
-
-		const data = await response.json();
-		console.log(data);
-
-		if (response.ok) {
-			if(id) {
-				updateProducts(data);
-			} else { 
-				/** Добавляем новый товар */
+			if(id){
+				formData.append("_id", id); 
+				result = await dispatch(updateProduct(formData)).unwrap();
+			}else{
+				result = await dispatch(createProduct(formData)).unwrap();
 			}
-			navigate(`/products/${data.id || id}`); 
-		} else {
-			alert("Ошибка при сохранении данных");
+
+			navigate(`/products/${result._id}`);
+		}catch(e){
+			if(e instanceof Error){
+				alert("Ошибка при сохранении данных" + e);
+			}
 		}
 	};
 
@@ -182,3 +175,4 @@ const EditProductsProfile = () => {
 };
 
 export default EditProductsProfile;
+
