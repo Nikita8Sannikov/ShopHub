@@ -23,14 +23,14 @@ router.get("/cartlist", async (req, res) => {
 // /api/cart/add
 router.post("/add", async (req, res) => {
     try {
-        const { guestId, userId, goodsId } = req.body
+        let { guestId, userId, goodsId } = req.body
 
         if (!userId && !guestId) {
             // Генерируем новый guestId, если его нет
             guestId = uuidv4();
         }
 
-        const cartItem = await Cart.findOne(
+        const cartItem = await UsersGoods.findOne(
             userId ? { userId, goodsId } : { guestId, goodsId }
         );
 
@@ -44,11 +44,12 @@ router.post("/add", async (req, res) => {
 
         await UsersGoods.create({ userId, guestId, goodsId, amount: 1 });
 
-        res.json({ message: "Product added to cart" })
-
+        
         if(!userId){
-        res.cookie("xcid", guestId, { httpOnly: true, maxAge: 86400 * 1000 });
+            res.cookie("xcid", guestId, { httpOnly: true, maxAge: 86400 * 1000 });
         }
+
+        res.json({ message: "Product added to cart" })
         
     } catch (error) {
         if (error instanceof Error) {
@@ -107,9 +108,10 @@ router.delete("/:id", async (req, res) => {
         const cartItem = await UsersGoods.findByIdAndDelete(id);
 
         if (!cartItem) {
-            res.status(404).json({ message: "Product not found" })
-            return
+            return res.status(404).json({ message: "Product not found" })
         }
+
+        res.json({ message: "Product removed from cart" });
 
     } catch (error) {
         if (error instanceof Error) {
