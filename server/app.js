@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import authRoutes from "./routes/auth.routes.js";
 // import usersRoutes from "./routes/users.routes.js";
 import goodsRoutes from "./routes/goods.routes.js";
+import cartRoutes from "./routes/cart.routes.js";
 import finalConfig from "./config/index.js";
 
 const app = express();
@@ -15,7 +16,7 @@ app.use(cookieParser()); //Мидлвар cookie-parser разбирает cooki
 app.use("/api/auth", authRoutes);
 // app.use("/api/users", usersRoutes);
 app.use("/api/goods", goodsRoutes);
-
+app.use("/api/cart", cartRoutes);
 //раздаём папку "uploads" как статические файлы
 app.use("/uploads", express.static("uploads"));
 
