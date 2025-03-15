@@ -12,6 +12,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
+      "/uploads": "http://localhost:5000",
       '/api': {
         target: 'http://localhost:5000/', // URL вашего API
         changeOrigin: true,            // Меняет источник (Origin) запроса
