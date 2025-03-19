@@ -6,6 +6,7 @@ import { RootState } from '@/store';
 import { Input } from "@/components/ui/input"
 import { PopoverAvatar } from '../popoverAvatar';
 import { AuthSheet } from '../authSheet';
+import { Button } from '../ui/button';
 import SideLayout from '../sideLayout'
 import BasketTool from '../basketTool';
 
@@ -13,18 +14,29 @@ import BasketTool from '../basketTool';
 interface HeaderProps {
     search?: string
     setSearch?: (e: string) => void
+    onBack?: () => void
+    showBack?: boolean
 }
 
-const Header = ({ search, setSearch }: HeaderProps) => {
+const Header = ({ search, setSearch, onBack, showBack = false }: HeaderProps) => {
     const { id } = useParams();
     const isAuth = useSelector((state: RootState) => state.auth.exists);
+
     return (
-        <header className="p-5 text-center bg-black text-white rounded-b-xl shadow-xl">
+        <header className="p-5 text-center bg-black text-white rounded-b-xl shadow-xl fixed top-0 left-0 right-0 z-50">
             <SideLayout side="between">
+                <div className='flex space-x-2 flex-col'>
                 <div className="font-black">
                     $HO₽_HU₿
                 </div>
-                {!id && 
+                {/* {id &&  */}
+                {showBack &&
+                <Button onClick={onBack}>Назад</Button>
+                }
+                {/* } */}
+                {/* onClick={()=>window.history.back()} variant="secondary" */}
+                </div>
+                {!id &&
                     <div>
                         <Input type="text"
                             placeholder="Я ищу.."
@@ -37,7 +49,7 @@ const Header = ({ search, setSearch }: HeaderProps) => {
 
                 {!isAuth && <AuthSheet />}
                 <div className='flex'>
-                    <BasketTool/>
+                    <BasketTool />
                     <PopoverAvatar />
                 </div>
 
