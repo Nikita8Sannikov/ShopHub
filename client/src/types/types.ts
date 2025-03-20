@@ -1,26 +1,20 @@
-import { CartItem } from "@/store/reducers/cart/cartSlice";
-
 export type UserId = string;
+
 export interface User {
-    _id: UserId
-    email: string
-    name: string
-    first_name: string
-    last_name: string
-    avatar: string
-    isAdmin: boolean
-    description: string
-    role: string
+    _id: UserId,
+    email: string,
+    name: string,
+    // password?: string,
+    isAdmin?: boolean
 }
 
-export type UserState = {
-    data: User[]
-    status: "idle" | "loading" | "fulfilled" | "failed"
-    error: string | null
-    page: number
-    total_pages: number
-    user: User | null
+export interface LoginState {
+    user: User | null,
+    error: string | null,
+    exists: boolean,
+    status: "idle" | "loading" | "succeeded" | "failed"
 }
+
 export type GoodsState = {
     data: Product[]
     status: "idle" | "loading" | "fulfilled" | "failed"
@@ -35,22 +29,26 @@ export interface Product {
     description: string
     price: number
     rating: number
-    // amount: number
-    // image: string
-    image: File
+    image: string
 }
 
-// export interface CartState {
-//     items: Product[]
-//     products: Product[]
-//     totalPrice: number
-//     status: "idle" | "loading" | "succeeded" | "failed"
-//     error: string | null
-//     product: Product | null
-// }
+export type CartItem = {
+    _id: string;
+    goodsId: string;
+    amount: number;
+    userId?: string;
+    guestId?: string;
+};
+
 export interface CartState {
     items: CartItem[]
     status: "idle" | "loading" | "succeeded" | "failed"
     error: string | null
     totalPrice: number,
 }
+
+export type AuthFormValues = {
+    name?: string;
+    email: string;
+    password: string;
+};

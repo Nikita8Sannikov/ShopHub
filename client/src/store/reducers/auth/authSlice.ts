@@ -1,23 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface User {
-    email: string,
-    name: string,
-    password?: string,
-    isAdmin?: boolean
-}
-interface LoginState {
-    user: User | null,
-    error: string | null,
-    exists: boolean,
-    status: "idle" | "loading" | "succeeded" | "failed"
-}
-const initialState: LoginState = {
-    user: null,
-    error: null,
-    exists: false,
-    status: "idle",
-}
+import { LoginState, User } from "@/types/types";
 
 export const signIn = createAsyncThunk<User, { email: string; password: string}>(
     "auth/signIn",
@@ -92,6 +74,13 @@ export const remind = createAsyncThunk<User, void>(
         return json
     }
 )
+
+const initialState: LoginState = {
+    user: null,
+    error: null,
+    exists: false,
+    status: "idle",
+}
 
 const authSlice = createSlice({
     name: 'auth',

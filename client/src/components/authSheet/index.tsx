@@ -1,3 +1,7 @@
+import { useState } from "react"
+import { useDispatch } from "react-redux"
+import { FormProvider, useForm } from "react-hook-form"
+
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -9,13 +13,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import AuthForm from "../authForm"
-import { useState } from "react"
-import { AppDispatch } from "@/store"
-import { useDispatch } from "react-redux"
 import { register as reg, signIn } from "@/store/reducers/auth/authSlice"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { FormProvider, useForm } from "react-hook-form"
 import { loginSchema, registerSchema } from "@/lib/validation"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { AppDispatch } from "@/store"
+import { AuthFormValues } from "@/types/types"
 // import { formSchema } from "@/lib/validation";
 
 export function AuthSheet() {
@@ -23,11 +25,6 @@ export function AuthSheet() {
   const [isRegistering, setIsRegistering] = useState(false)
   const dispatch: AppDispatch = useDispatch();
 
-  type AuthFormValues = {
-    name?: string ;
-    email: string;
-    password: string;
-  };
 
   const formMethods = useForm<AuthFormValues>({
     resolver: zodResolver(isRegistering ? registerSchema : loginSchema),
