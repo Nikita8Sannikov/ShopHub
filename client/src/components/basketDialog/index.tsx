@@ -6,7 +6,7 @@ import {
   Dialog,
   DialogContent,
   //   DialogDescription,
-  //   DialogFooter,
+    DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -28,9 +28,9 @@ export function BasketDialog() {
           </DialogDescription> */}
         </DialogHeader>
         <BasketTable onClose={() => setOpen(false)} />
-        {/* <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter> */}
+        <DialogFooter>
+          <Button type="submit">Оплатить</Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

@@ -1,10 +1,13 @@
-import { Separator } from "@/components/ui/separator"
-import { RootState } from "@/store";
 import { useSelector } from "react-redux";
+
+import { RootState } from "@/store";
+import useBasketGoods from "@/hooks/useBasketGoods";
+
+import { Separator } from "@/components/ui/separator"
 
 export function BasketSeparator() {
   const items = useSelector((state: RootState) => state.cart.items);
-  const totalPrice = useSelector((state: RootState) => state.cart.totalPrice);
+  const { totalPrice } = useBasketGoods();
 
   return (
     <div className="flex h-5  justify-center space-x-2">

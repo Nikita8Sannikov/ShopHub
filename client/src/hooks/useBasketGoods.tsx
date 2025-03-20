@@ -16,7 +16,7 @@ const useBasketGoods = () => {
     return { ...good, amount: item.amount };
 }).filter(Boolean);
 
- const totalPrice = basketGoods.map(item => (item?.price ?? 0) * item?.amount).reduce((prev, next) => prev + next, 0);   
+ const totalPrice = basketGoods.map(item => (item?.price ?? 0) * (item?.amount ?? 0)).reduce((prev, next) => prev + next, 0);   
  
   return {totalPrice, basketGoods};
 }

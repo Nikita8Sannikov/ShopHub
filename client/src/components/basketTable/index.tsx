@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
+import useBasketGoods from "@/hooks/useBasketGoods";
+import { AppDispatch, RootState } from "@/store";
+import { CartItem, deleteFromCart, fetchCartByUserId, patchAmountCart } from "@/store/reducers/cart/cartSlice";
+
+import { Button } from "../ui/button";
 import {
     Table,
     TableBody,
@@ -11,34 +16,39 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { AppDispatch, RootState } from "@/store";
-import { addItem, removeItem, removeItemAll } from "@/store/reducers/cart/cartSlice";
-import { Product } from "@/types/types";
-import { Button } from "../ui/button";
+
 
 interface BasketTableProps {
     onClose: () => void
 }
 export function BasketTable({ onClose }: BasketTableProps) {
     const items = useSelector((state: RootState) => state.cart.items);
-    const totalPrice = useSelector((state: RootState) => state.cart.totalPrice);
-
+    const user = useSelector((state: RootState) => state.auth.user);
+    const { totalPrice, basketGoods } = useBasketGoods();
     const dispatch: AppDispatch = useDispatch();
 
+
+
     const callbacks = {
-        onAdd:
-            (item: Product) => {
-                dispatch(addItem(item));
+        onPlus:
+            (item: CartItem) => {
+                dispatch(patchAmountCart({ id: item._id, action: 'increase' }));
             },
-        removeItem:
-            (item: Product) => {
-                console.log(`Удаление товара ${JSON.stringify(item.title)}`);
-                dispatch(removeItem(item));
+        onMinus:
+            (item: CartItem) => {
+                dispatch(patchAmountCart({ id: item._id, action: 'decrease' }))
+                    .unwrap()
+                    .then(() => {
+                        dispatch(fetchCartByUserId(user?._id));
+                    });
             },
-            removeItemAll:
-            (item: Product) => {
-                console.log(`Удаление товара ${JSON.stringify(item.title)}`);
-                dispatch(removeItemAll(item));
+        removeItemAll:
+            (item: CartItem) => {
+                dispatch(deleteFromCart(item._id))
+                    .unwrap()
+                    .then(() => {
+                        dispatch(fetchCartByUserId(user?._id));
+                    });
             }
     };
 
@@ -54,29 +64,44 @@ export function BasketTable({ onClose }: BasketTableProps) {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {items.map((item) => (
-                    <TableRow key={item.id}>
-                        <Link to={`/products/${item.id}`}
-                            onClick={() => onClose()}
-                        >
-                            <TableCell className="font-medium">{item.title}</TableCell>
-                        </Link>
-                        <TableCell>${item.price}</TableCell>
+                {basketGoods.map((item) => (
+                    <TableRow key={item?._id}>
+                        <TableCell className="font-medium">
+                            <Link to={`/products/${item?._id}`}
+                                onClick={() => onClose()}
+                            >
+                                {item?.title}
+                            </Link>
+                        </TableCell>
+                        <TableCell>${item?.price}</TableCell>
                         <TableCell>
-                            <Button onClick={() => callbacks.removeItem(item)}>-</Button>
-                            {item.amount}шт.
-                            <Button onClick={() => callbacks.onAdd(item)}>+</Button>
+                            <Button onClick={() => {
+                                const cartItem = items.find(i => i.goodsId === item?._id);
+                                if (cartItem) callbacks.onMinus(cartItem)
+                            }
+                            }>-</Button>
+                            {item?.amount}шт.
+                            <Button onClick={() => {
+                                const cartItem = items.find(i => i.goodsId === item?._id);
+                                if (cartItem) callbacks.onPlus(cartItem)
+                            }
+                            }>+</Button>
                         </TableCell>
 
-                        <TableCell className="text-right">${item.price * item.amount}</TableCell>
-                        <TableCell className="text-right"><Button onClick={() => callbacks.removeItemAll(item)}>Удалить</Button></TableCell>
+                        <TableCell className="text-right">${((item?.price ?? 0) * (item?.amount ?? 0)).toFixed(2)}</TableCell>
+
+                        <TableCell className="text-right"><Button onClick={() => {
+                            const cartItem = items.find(i => i.goodsId === item?._id);
+                            if (cartItem) callbacks.removeItemAll(cartItem)
+                        }}>Удалить</Button>
+                        </TableCell>
                     </TableRow>
                 ))}
             </TableBody>
             <TableFooter>
                 <TableRow>
                     <TableCell colSpan={3}>Total</TableCell>
-                    <TableCell className="text-right">${totalPrice}</TableCell>
+                    <TableCell className="text-right">${totalPrice.toFixed(2)}</TableCell>
                 </TableRow>
             </TableFooter>
         </Table>
