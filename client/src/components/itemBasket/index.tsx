@@ -12,7 +12,8 @@ interface ItemProps {
 
 const ItemBasket: React.FC<ItemProps> = ({ item, callback, link, onClose }) => {
 	const callbacks = {
-		onRemove: callback,
+		// onRemove: callback,
+		onRemoveAll: callback,
 		onClose: onClose,
 	};
 	return (
@@ -32,11 +33,11 @@ const ItemBasket: React.FC<ItemProps> = ({ item, callback, link, onClose }) => {
 			шт:{numberFormat(item.amount || 0)} 
 
 
-			<button onClick={() => callbacks.onRemove(item)}>Удалить</button>
+			{/* <button onClick={() => callbacks.onRemove(item)}>Удалить</button> */}
+			<button onClick={() => callbacks.onRemoveAll(item)}>Удалить</button>
 		</>
 	);
 };
 
 export default memo(ItemBasket);
-
 
