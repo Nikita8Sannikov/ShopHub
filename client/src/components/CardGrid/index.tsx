@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { RootState } from '@/store';
 import { Product } from '@/types/types';
-
+import { Card, CardContent, CardFooter } from '../ui/card';
 interface CardGridProps {
   items: Product[];
   renderItem: (item: Product) => React.ReactNode;
@@ -12,35 +12,30 @@ interface CardGridProps {
 
 const CardGrid = ({ items, renderItem }: CardGridProps) => {
   const user = useSelector((state: RootState) => state.auth.user);
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-   const callbacks = {
-         onCreate: () => {
-             navigate("/create");
-         },
-        }
+  const callbacks = {
+    onCreate: () => {
+      navigate("/create");
+    },
+  }
   return (
-    <div className="user-cards">
-      {user?.isAdmin &&
-        <div className='user-card' onClick={ callbacks.onCreate}>
-          <img
-            // src={product.image}
-            alt={`+`}
-            className="avatar"
-          />
-          <h2 className="name">
-            Add new item
-          </h2>
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-5 p-5 w-[120%]">
+      {user?.isAdmin && (
+        <Card onClick={callbacks.onCreate}  className="flex items-center justify-center p-4 cursor-pointer transition-transform duration-200 hover:scale-105 border-dashed border-gray-400">
+          <CardContent className="p-0 flex flex-col items-center justify-center">
+            <div className="w-[100px] h-[100px] rounded-full bg-gray-200 flex items-center justify-center text-4xl font-bold text-gray-600">
+              +
+            </div>
+            <h2 className="mt-3 text-lg text-gray-800">Add new item</h2>
+          </CardContent>
+        </Card>
 
-        </div>
-      }
+      )}
       {items.map((item: Product) => (
-        <div
-          key={item._id}
-          className="user-card"
-        >
-          {renderItem(item)}
-        </div>
+        <Card key={item._id} className="p-4">
+          <CardContent className="p-0">{renderItem(item)}</CardContent>
+        </Card>
       ))}
     </div>
   )

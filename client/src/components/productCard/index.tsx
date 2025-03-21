@@ -4,92 +4,60 @@ import { Link } from 'react-router-dom';
 import { Product } from '@/types/types'
 import { RootState } from '@/store';
 
-// import { Card, CardContent, CardFooter} from '../ui/card';
 import { Button } from '../ui/button';
-
-import "./style.css"
+import ProductCardItem from '../productCardItem';
+import { CardFooter } from '../ui/card';
 
 interface ProductCardProps {
     product: Product;
     onAdd: (item: Product) => void;
-    onRemove: (item: Product) => void;
+    onDelete: (item: Product) => void;
+    onPlus: (item: Product) => void;
+    onMinus: (item: Product) => void;
     link: string;
 }
 
-const ProductCard = ({ product, onAdd, onRemove, link }: ProductCardProps) => {
+const ProductCard = ({ product, onAdd, onPlus, onMinus, onDelete, link }: ProductCardProps) => {
+    const user = useSelector((state: RootState) => state.auth.user);
     const items = useSelector((state: RootState) => state.cart.items);
-    const isInCart = items.some((item) => item.id === product.id);
-    const item = items.find((item) => item.id === product.id);
+    const isInCart = items.some((item) => item.goodsId === product._id);
+    const item = items.find((item) => item.goodsId === product._id);
 
     const callbacks = {
         onAdd: onAdd,
-        onRemove: onRemove,
+        onDelete: onDelete,
+        onPlus: onPlus,
+        onMinus: onMinus
     };
     return (
         <>{link ? (
             <Link to={link}>
-                <img
-                    src={product.image}
-                    alt={`${product.title}`}
-                    className="avatar"
-                />
-                <h2 className="name">
-                    {product.title} ${product.price}
-                </h2>
+                <ProductCardItem product={product} />
+
+
+
             </Link>
         ) : (
-            <>
-                <img
-                    src={product.image}
-                    alt={`${product.title}`}
-                    className="avatar"
-                />
-                <h2 className="name">
-                    {product.title} ${product.price}
-                </h2>
-            </>
+            <ProductCardItem product={product} />
         )}
-
-            {isInCart ? (
-                <>
-                    <Button onClick={() => callbacks.onRemove(product)}>-</Button>
-                    <span>{item?.amount}</span>
-                    <Button onClick={() => callbacks.onAdd(product)}>+</Button>
-                </>
-            ) : (
-                <Button
-                    onClick={() => callbacks.onAdd(product)}>
-                    Добавить в корзину
-                </Button>
-            )}
-      
-
+            <CardFooter className="flex justify-between">
+                {isInCart ? (
+                    <>
+                        <Button onClick={() => callbacks.onMinus(item)}>-</Button>
+                        <span>{item?.amount}</span>
+                        <Button onClick={() => callbacks.onPlus(item)}>+</Button>
+                    </>
+                ) : (
+                    <Button
+                        onClick={() => callbacks.onAdd(product)}>
+                        Добавить в корзину
+                    </Button>
+                )}
+                {user?.isAdmin &&
+                    <Button onClick={() => callbacks.onDelete(product)}>Del</Button>
+                }
+            </CardFooter>
         </>
-        // </div>
-        // <Card className="w-[350px]">
-        //     <CardContent>
-        //         <form>
-        //             <div className="grid w-full items-center gap-4">
-        //                 <div className="flex flex-col space-y-1.5">
-        //                     <img
-        //                         src={product.image}
-        //                         alt={`${product.title}`}
-        //                         className="avatar"
-        //                     />
-        //                 </div>
-        //                 <div className="flex flex-col space-y-2.5">
-        //                     <h2 className="name">
-        //                         {product.title} ${product.price}
-        //                     </h2>
-        //                 </div>
-        //             </div>
-        //         </form>
-        //     </CardContent>
-        //     <CardFooter className="flex justify-center">
-        //         <Button variant="outline">Купить</Button>
-        //     </CardFooter>
-        // </Card>
-        // ))
     )
 }
 
