@@ -1,5 +1,6 @@
 import { Router } from "express";
 import UsersGoods from "../models/UsersGoods.js";
+import Goods from "../models/Goods.js";
 import { v4 as uuidv4 } from 'uuid';
 
 const router = Router();
@@ -25,9 +26,15 @@ router.post("/add", async (req, res) => {
     try {
         let { guestId, userId, goodsId } = req.body
 
+        if(!userId){
+            // Берём guestId из куки
+            guestId = guestId || req.cookies.xcid; 
+        }
+
         if (!userId && !guestId) {
             // Генерируем новый guestId, если его нет
             guestId = uuidv4();
+            res.cookie("xcid", guestId, { httpOnly: true, maxAge: 86400 * 1000 });
         }
 
         const cartItem = await UsersGoods.findOne(
@@ -35,21 +42,25 @@ router.post("/add", async (req, res) => {
         );
 
         if (cartItem) {
-            //     cartItem.amount += 1;
-            //     await cartItem.save();
-            //   } else {
-            //     await Cart.create({ userId, guestId, goodsId, amount: 1 });
             return res.status(400).json({ message: "Product already in cart" });
         }
 
-        await UsersGoods.create({ userId, guestId, goodsId, amount: 1 });
+        const newCartItem = await UsersGoods.create({ userId, guestId, goodsId, amount: 1 });
 
-        
-        if(!userId){
-            res.cookie("xcid", guestId, { httpOnly: true, maxAge: 86400 * 1000 });
+        const product = await Goods.findById(goodsId);
+
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
         }
 
-        res.json({ message: "Product added to cart" })
+        res.json({ 
+            _id: newCartItem._id,
+            goodsId: product._id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            amount: newCartItem.amount
+        });
         
     } catch (error) {
         if (error instanceof Error) {
@@ -60,6 +71,11 @@ router.post("/add", async (req, res) => {
         }
     }
 })
+
+// /api/cart/get-cookie
+router.get("/get-cookie", (req, res) => {
+    res.json({ guestId: req.cookies.xcid || null });
+});
 
 // /api/cart/:id
 router.patch("/:id", async (req, res) => {
