@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { check, validationResult } from "express-validator";
 import User from "../models/User.js";
+import UserGoods from "../models/UsersGoods.js";
 import finalConfig from "../config/index.js";
 
 const router = Router();
@@ -82,10 +83,43 @@ router.post(
 				return;
 			}
 
+			const guestId = req.cookies.xcid; //Получаем guestId из кукис
+
+			// service auth.service.getcart
+			if (guestId) {
+				// Получаем товары гостя
+				const guestCartItems = await UserGoods.find({ guestId });
+			
+				for (const item of guestCartItems) {
+					// Проверяем, есть ли уже такой товар у пользователя
+					const existingItem = await UserGoods.findOne({ userId: user._id, goodsId: item.goodsId });
+			
+					if (existingItem) {
+						// Если товар уже есть, обновляем количество
+						await UserGoods.updateOne(
+							{ _id: existingItem._id },
+							{ $inc: { amount: item.amount } }
+						);
+			
+						// Удаляем дублирующийся товар гостя
+						await UserGoods.deleteOne({ _id: item._id });
+					} else {
+						// Если товара нет у пользователя, просто привязываем его к userId
+						await UserGoods.updateOne(
+							{ _id: item._id },
+							{ $set: { userId: user._id, guestId: null } }
+						);
+					}
+				}
+			
+				res.clearCookie("xcid", {
+					path: "/"}); // Удаляем guestId из куков
+			}
+
 			const isMatch = await bcrypt.compare(password, user.password);
 
 			if (!isMatch) {
-				res.status(400).json({ message: "Wrong password" });
+				res.status(401).json({ message: "Wrong password or login" });
 				return;
 			}
 
@@ -94,11 +128,12 @@ router.post(
 			});
 
 			res.cookie("auth_token", token, {
+				path: "/",
 				httpOnly: true,
 				sameSite: "none",
 				secure: true,
 				maxAge: 3600000,
-				partitioned: true, // позволяет браузеру сохранять third-party cookies (куки с другого домена) в изолированном контексте.
+				// partitioned: true, // позволяет браузеру сохранять third-party cookies (куки с другого домена) в изолированном контексте.
 			});
 
 			if (user.isAdmin) {
@@ -125,6 +160,7 @@ router.post(
 router.post("/logout", async (req, res) => {
 	try {
 		res.clearCookie("auth_token", {
+			path: "/",
 			httpOnly: true,
 			sameSite: "none",
 			secure: true,
@@ -147,7 +183,7 @@ router.get("/me", async (req, res) => {
 		const userId = decoded.userId;
 
 		const user = await User.findById(userId).select("-password");
-		
+
 		if (!user) {
 			return res.status(404).json({ message: "User not found" });
 		}
