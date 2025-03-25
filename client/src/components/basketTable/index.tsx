@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import useBasketGoods from "@/hooks/useBasketGoods";
 import { AppDispatch, RootState } from "@/store";
-import { CartItem, deleteFromCart, fetchCartByUserId, patchAmountCart } from "@/store/reducers/cart/cartSlice";
+import { deleteFromCart, fetchCartByUserId, patchAmountCart } from "@/store/reducers/cart/cartSlice";
+import { CartItem } from "@/types/types"
 
 import { Button } from "../ui/button";
 import {
@@ -17,17 +18,16 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-
 interface BasketTableProps {
     onClose: () => void
+    columns: { key: string, label: string, className?: string }[]
 }
-export function BasketTable({ onClose }: BasketTableProps) {
+
+export function BasketTable({ onClose, columns }: BasketTableProps) {
     const items = useSelector((state: RootState) => state.cart.items);
     const user = useSelector((state: RootState) => state.auth.user);
     const { totalPrice, basketGoods } = useBasketGoods();
     const dispatch: AppDispatch = useDispatch();
-
-
 
     const callbacks = {
         onPlus:
@@ -39,7 +39,7 @@ export function BasketTable({ onClose }: BasketTableProps) {
                 dispatch(patchAmountCart({ id: item._id, action: 'decrease' }))
                     .unwrap()
                     .then(() => {
-                        dispatch(fetchCartByUserId(user?._id));
+                        dispatch(fetchCartByUserId(user?._id ?? ""));
                     });
             },
         removeItemAll:
@@ -47,7 +47,7 @@ export function BasketTable({ onClose }: BasketTableProps) {
                 dispatch(deleteFromCart(item._id))
                     .unwrap()
                     .then(() => {
-                        dispatch(fetchCartByUserId(user?._id));
+                        dispatch(fetchCartByUserId(user?._id ?? ""));
                     });
             }
     };
@@ -57,10 +57,11 @@ export function BasketTable({ onClose }: BasketTableProps) {
             {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
             <TableHeader>
                 <TableRow>
-                    <TableHead className="w-[100px]">Товар</TableHead>
-                    <TableHead>Цена</TableHead>
-                    <TableHead>Количество</TableHead>
-                    <TableHead className="text-right">Сумма</TableHead>
+                    {columns.map((column) => (
+                        <TableHead key={column.key} className={column.className}>
+                            {column.label}
+                        </TableHead>
+                    ))}
                 </TableRow>
             </TableHeader>
             <TableBody>
