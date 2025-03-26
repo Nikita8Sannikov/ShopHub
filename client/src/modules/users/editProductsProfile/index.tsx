@@ -10,15 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Header from "@/components/header";
 
-import "./edit.css";
-
 interface IForm {
 	title: string;
 	category: string;
 	description: string;
 	price: number;
 	rating: number;
-	image: File | null;
+	image: File | string | null;
 }
 
 const EditProductsProfile = () => {
@@ -123,9 +121,9 @@ const EditProductsProfile = () => {
 
 	return (
 		<div className="edit-container">
-			<Header onBack={id ? callbacks.onEditBack : callbacks.onCreateBack} />
+			<Header showBack={true} onBack={id ? callbacks.onEditBack : callbacks.onCreateBack} />
 
-			<form className="mt-[150px]" onSubmit={handleSave}>
+			<form className="mt-[150px] p-8 shadow-[0_0px_15px_rgba(0,0,0,0.1)] max-w-lg" onSubmit={handleSave}>
 				{user?.isAdmin && (
 					<>
 						<Input type="text"
@@ -133,6 +131,7 @@ const EditProductsProfile = () => {
 							placeholder="Имя товара"
 							value={form.title}
 							onChange={changeHandler}
+							className="mb-4"
 						/>
 
 						<Input type="text"
@@ -140,6 +139,7 @@ const EditProductsProfile = () => {
 							placeholder="Категория"
 							value={form.category}
 							onChange={changeHandler}
+							className="mb-4"
 						/>
 
 						<Textarea
@@ -147,6 +147,7 @@ const EditProductsProfile = () => {
 							placeholder="Описание"
 							value={form.description}
 							onChange={changeHandler}
+							className="mb-4"
 						/>
 
 						<Input type="text"
@@ -154,6 +155,7 @@ const EditProductsProfile = () => {
 							placeholder="Цена"
 							value={form.price}
 							onChange={changeHandler}
+							className="mb-4"
 						/>
 
 						<Input type="text"
@@ -161,10 +163,13 @@ const EditProductsProfile = () => {
 							placeholder="Рейтинг"
 							value={form.rating}
 							onChange={changeHandler}
+							className="mb-4"
 						/>
 						<Input type="file"
 							accept="image/*"
-							onChange={handleFileChange} />
+							onChange={handleFileChange}
+							className="mb-4"
+						/>
 					</>
 				)}
 
