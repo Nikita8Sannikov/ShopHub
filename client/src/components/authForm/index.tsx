@@ -11,13 +11,13 @@ import { AuthFormValues } from "@/types/types";
 interface AuthFormProps {
   isRegistering: boolean
   setIsRegistering: (value: boolean) => void
-  onSubmit: (data) => void;
+  onSubmit: (data: AuthFormValues) => void;
   loading: boolean
 }
 
 export default function AuthForm({ isRegistering, setIsRegistering, onSubmit, loading }: AuthFormProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const { register, formState: { errors } } = useFormContext<AuthFormValues>();
+  const { register, handleSubmit, formState: { errors } } = useFormContext<AuthFormValues>();
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -31,7 +31,7 @@ export default function AuthForm({ isRegistering, setIsRegistering, onSubmit, lo
         </CardTitle>
       </CardHeader> */}
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)}  className="space-y-4">
           {isRegistering && (
             <div>
               <Label htmlFor="name">Имя</Label>

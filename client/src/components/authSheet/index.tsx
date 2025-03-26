@@ -98,7 +98,7 @@ export function AuthSheet() {
           <AuthForm
             isRegistering={isRegistering}
             setIsRegistering={setIsRegistering}
-            onSubmit={formMethods.handleSubmit(onSubmit)}
+            onSubmit={onSubmit}
             loading={loading}
           />
         </FormProvider>
