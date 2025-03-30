@@ -1,0 +1,35 @@
+# Список сервисов, запускаемых каждый в своем отдельном докер контейнере
+services:
+  server:
+    build:
+      context: ./server  #Указываем название на рабочую директорию сервера из файла конфигурации docker
+      dockerfile: Dockerfile  # путь к Dockerfile сервера
+    container_name: shop_server    # Наименование контейнера сервера докера (для последующей отладки)
+    ports:
+      - "5001:5001"
+    networks:
+      - app_network
+    env_file:
+      - ./server/.env  # Использование .env файла
+    environment:
+      - NODE_ENV=production  # Переменная окружения    
+
+   # Сервис балансировщика nginx
+  nginx:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: messanger_nginx     
+    ports:
+      - "5002:80"                         # Указываем соответствие между портами: 5000 (внешний порт nginx), 80 - внутренний порт контейнера - для http соединения
+    networks:
+      - app_network                       # Указываем способ общения с другими сервисами
+    depends_on:
+      - server                            # Запускаем данный сервис только после успешного запуска сервиса server   
+    volumes:
+      - ./client/nginx/nginx.conf:/etc/nginx/nginx.conf  # Прокси-конфигурация Nginx
+
+# Данное поле необходимо для установки общения между сервисами
+networks:
+  app_network:
+    driver: bridge                        # Создает изолированную сеть
