@@ -111,8 +111,7 @@ const authSlice = createSlice({
                 state.status = 'failed'
                 state.error = action.error.message || "failed"
             })
-            .addCase(register.fulfilled, (state, action: PayloadAction<User>) => {
-                state.user = action.payload
+            .addCase(register.fulfilled, (state) => {
                 state.status = "succeeded"
                 state.exists = false
 
