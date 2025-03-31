@@ -6,9 +6,22 @@ import authRoutes from "./routes/auth.routes.js";
 import goodsRoutes from "./routes/goods.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import finalConfig from "./config/index.js";
+import cors from "cors";
 
 const app = express();
-
+const allowedOrigins = ["http://localhost:5002"];
+app.use(cors({
+    origin: (origin, callback) => {
+		console.log(origin);
+		
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true
+})); // Включает CORS для всех запросов
 app.use(express.json()); // Миддлвар для обработки JSON-тел запросов
 app.use(express.urlencoded({ extended: true })); // Миддлвар для обработки URL-кодированных запросов
 app.use(cookieParser()); //Мидлвар cookie-parser разбирает cookies и делает их доступными через req.cookies
@@ -20,7 +33,7 @@ app.use("/api/cart", cartRoutes);
 //раздаём папку "uploads" как статические файлы
 app.use("/uploads", express.static("uploads"));
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5001
 
 async function start() {
 	try {
