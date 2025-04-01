@@ -2,9 +2,10 @@ import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { check, validationResult } from "express-validator";
+
 import User from "../models/User.js";
-import UserGoods from "../models/UsersGoods.js";
 import finalConfig from "../config/index.js";
+import guestCartToUserCart from "../service/authService.js";
 
 const router = Router();
 const jwtSecret = finalConfig.jwtSecret;
@@ -77,7 +78,10 @@ router.post(
 			const { email, password } = req.body;
 
 			const user = await User.findOne({ email });
-
+			console.log(user);
+			console.log(email);
+			
+			
 			if (!user) {
 				res.status(404).json({ message: "User not found" });
 				return;
@@ -86,35 +90,7 @@ router.post(
 			const guestId = req.cookies.xcid; //Получаем guestId из кукис
 
 			// service auth.service.getcart
-			if (guestId) {
-				// Получаем товары гостя
-				const guestCartItems = await UserGoods.find({ guestId });
-			
-				for (const item of guestCartItems) {
-					// Проверяем, есть ли уже такой товар у пользователя
-					const existingItem = await UserGoods.findOne({ userId: user._id, goodsId: item.goodsId });
-			
-					if (existingItem) {
-						// Если товар уже есть, обновляем количество
-						await UserGoods.updateOne(
-							{ _id: existingItem._id },
-							{ $inc: { amount: item.amount } }
-						);
-			
-						// Удаляем дублирующийся товар гостя
-						await UserGoods.deleteOne({ _id: item._id });
-					} else {
-						// Если товара нет у пользователя, просто привязываем его к userId
-						await UserGoods.updateOne(
-							{ _id: item._id },
-							{ $set: { userId: user._id, guestId: null } }
-						);
-					}
-				}
-			
-				res.clearCookie("xcid", {
-					path: "/"}); // Удаляем guestId из куков
-			}
+			await guestCartToUserCart(user._id, guestId, res);
 
 			const isMatch = await bcrypt.compare(password, user.password);
 
