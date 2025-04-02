@@ -1,22 +1,63 @@
-import Goods from "../models/Goods.js";
+import { getProducts, getProductsById, deleteProductById, createProduct, patchProduct } from "../services/goodsService.js";
 
-export const createProduct = async (req, res) => {
+export const getProductsController = async (req, res) => {
+    try {
+        const goods = await getProducts();
+
+        res.status(200).json(goods);
+    } catch (e) {
+        res.status(500).json({
+            message: "Smth wrong, try again",
+            error: e.message,
+        });
+    }
+}
+
+export const getProductsByIdController = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const good = await getProductsById(id);
+
+        if (!good) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+        res.status(200).json(good);
+    } catch (e) {
+        res.status(500).json({
+            message: "Smth wrong, try again",
+            error: e.message,
+        });
+    }
+}
+
+export const deleteProductByIdController = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const good = await deleteProductById(id);
+
+        if (!good) {
+            res.status(404).json({ message: "Product not found" });
+            return;
+        }
+
+        res.status(200).json({ message: "Good deleted" });
+    } catch (e) {
+        res.status(500).json({
+            message: "Smth wrong, try again",
+            error: e.message,
+        });
+    }
+}
+
+export const createProductController = async (req, res) => {
     try {
         const { title, category, description, price, rating } = req.body;
-        // req.file содержит загруженный файл
-        // /uploads/${req.file.filename} — путь к изображению
-        const image = req.file ? `/uploads/${req.file.filename}` : null;
 
-        const good = new Goods({
-            title,
-            category,
-            description,
-            price,
-            rating,
-            image //Сохраняем путь к файлу в БД
-        });
+        const good = await createProduct(title, category, description, price, rating, req.file);
 
-        await good.save();
         res.status(201).json(good);
     } catch (e) {
         res.status(500).json({
@@ -26,7 +67,7 @@ export const createProduct = async (req, res) => {
     }
 };
 
-export const patchProduct = async (req, res) => {
+export const patchProductController = async (req, res) => {
     try {
         console.log("BODY:", req.body);
         console.log("FILE:", req.file);
@@ -35,22 +76,11 @@ export const patchProduct = async (req, res) => {
 
         const { title, category, description, price, rating, image } = req.body;
 
-        const good = await Goods.findById(id);
-        if (!good) {
-            res.status(404).json({ message: "User not found" });
-            return;
-        }
-        (good.title = title),
-            (good.category = category),
-            (good.description = description),
-            (good.price = price),
-            (good.rating = rating),
-            (good.image = image),
+        const good = await patchProduct(id, title, category, description, price, rating, image);
 
-            await good.save();
         res.status(200).json(good);
     } catch (e) {
-        res.status(500).json({
+        res.status(e.message === "Product not found" ? 404 : 500).json({
             message: "Smth wrong, try again",
             error: e.message,
         });
