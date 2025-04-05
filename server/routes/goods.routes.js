@@ -7,7 +7,7 @@ import {
 	getProductsByIdController,
 	createProductController,
 	patchProductController
-} from "../controllers/goods.controller.js";
+} from "../controllers/goods.controllers.js";
 
 const router = Router();
 
