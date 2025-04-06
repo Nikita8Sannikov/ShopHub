@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
-
 import UsersGoods from "../models/UsersGoods.js";
 import Goods from "../models/Goods.js";
 
@@ -7,20 +5,7 @@ export const getCart = async () => {
     return await UsersGoods.find()
 }
 
-export const addToCart = async (req, res) => {
-    let { guestId, userId, goodsId } = req.body
-
-    if (!userId) {
-        // Берём guestId из куки
-        guestId = guestId || req.cookies.xcid;
-    }
-
-    if (!userId && !guestId) {
-        // Генерируем новый guestId, если его нет
-        guestId = uuidv4();
-        res.cookie("xcid", guestId, { httpOnly: true, maxAge: 86400 * 1000 });
-    }
-
+export const addToCart = async (userId, guestId, goodsId) => {
     const cartItem = await UsersGoods.findOne(
         userId ? { userId, goodsId } : { guestId, goodsId }
     );

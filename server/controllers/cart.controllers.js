@@ -1,4 +1,5 @@
-import { getCart, addToCart, patchCart } from "../service/cartService.js";
+import { v4 as uuidv4 } from 'uuid';
+import { getCart, addToCart, patchCart, deleteCartById } from "../service/cartService.js";
 
 export const getCartController = async (req, res) => {
     try {
@@ -16,7 +17,26 @@ export const getCartController = async (req, res) => {
 
 export const addToCartController = async (req, res) => {
     try {
-        const result = await addToCart(req)
+        let { guestId, userId, goodsId } = req.body
+
+        if (!userId) {
+            // Берём guestId из куки
+            guestId = guestId || req.cookies.xcid;
+        }
+
+        if (!userId && !guestId) {
+            // Генерируем новый guestId, если его нет
+            guestId = uuidv4();
+            res.cookie("xcid", guestId, {
+                path: "/",
+                httpOnly: true,
+                maxAge: 86400 * 1000,
+                sameSite: "none",
+                secure: true,
+            });
+        }
+
+        const result = await addToCart(userId, guestId, goodsId);
         res.json(result)
     } catch (error) {
         if (error instanceof Error) {
