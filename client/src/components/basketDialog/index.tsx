@@ -13,11 +13,11 @@ import {
 } from "@/components/ui/dialog"
 
 const columns = [
-  { key: "title", label: "Товар", className: "w-[100px]" },
-  { key: "price", label: "Цена" },
-  { key: "amount", label: "Количество" },
-  { key: "total", label: "Сумма", className: "text-right" },
-  { key: "actions", label: "", className: "text-right" }
+  { key: "title", label: "Товар", className: "w-[35%] text-left" },
+  { key: "price", label: "Цена", className: "w-[10%] text-center"},
+  { key: "amount", label: "Количество", className: "w-[20%] text-center" },
+  { key: "total", label: "Сумма", className: "w-[15%] text-right" },
+  { key: "actions", label: "", className: "w-[20%] text-right" }
 ];
 
 export function BasketDialog() {

@@ -74,15 +74,15 @@ export function BasketTable({ onClose, columns }: BasketTableProps) {
                                 {item?.title}
                             </Link>
                         </TableCell>
-                        <TableCell>${item?.price}</TableCell>
-                        <TableCell>
-                            <Button onClick={() => {
+                        <TableCell className="text-center">${item?.price}</TableCell>
+                        <TableCell className="text-center flex items-center gap-2 justify-center">
+                            <Button size="sm" variant="outline" onClick={() => {
                                 const cartItem = items.find(i => i.goodsId === item?._id);
                                 if (cartItem) callbacks.onMinus(cartItem)
                             }
                             }>-</Button>
-                            {item?.amount}шт.
-                            <Button onClick={() => {
+                            <span className="w-[50px] text-center font-mono">{item?.amount}шт.</span>
+                            <Button size="sm" variant="outline" onClick={() => {
                                 const cartItem = items.find(i => i.goodsId === item?._id);
                                 if (cartItem) callbacks.onPlus(cartItem)
                             }
@@ -91,10 +91,11 @@ export function BasketTable({ onClose, columns }: BasketTableProps) {
 
                         <TableCell className="text-right">${((item?.price ?? 0) * (item?.amount ?? 0)).toFixed(2)}</TableCell>
 
-                        <TableCell className="text-right"><Button onClick={() => {
-                            const cartItem = items.find(i => i.goodsId === item?._id);
-                            if (cartItem) callbacks.removeItemAll(cartItem)
-                        }}>Удалить</Button>
+                        <TableCell className="text-right">
+                            <Button variant="destructive" onClick={() => {
+                                const cartItem = items.find(i => i.goodsId === item?._id);
+                                if (cartItem) callbacks.removeItemAll(cartItem)
+                            }}>Удалить</Button>
                         </TableCell>
                     </TableRow>
                 ))}

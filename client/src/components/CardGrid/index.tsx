@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { RootState } from '@/store';
 import { Product } from '@/types/types';
-import { Card, CardContent, CardFooter } from '../ui/card';
+import { Card, CardContent } from '../ui/card';
 interface CardGridProps {
   items: Product[];
   renderItem: (item: Product) => React.ReactNode;
@@ -20,7 +20,7 @@ const CardGrid = ({ items, renderItem }: CardGridProps) => {
     },
   }
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-5 p-5 w-[120%]">
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] auto-rows-[1fr] gap-5 p-5 w-[120%]">
       {user?.isAdmin && (
         <Card onClick={callbacks.onCreate}  className="flex items-center justify-center p-4 cursor-pointer transition-transform duration-200 hover:scale-105 border-dashed border-gray-400">
           <CardContent className="p-0 flex flex-col items-center justify-center">
@@ -33,8 +33,8 @@ const CardGrid = ({ items, renderItem }: CardGridProps) => {
 
       )}
       {items.map((item: Product) => (
-        <Card key={item._id} className="p-4">
-          <CardContent className="p-0">{renderItem(item)}</CardContent>
+        <Card key={item._id} className="h-full flex flex-col transition-transform duration-200 hover:scale-105 border-gray-400">
+          <CardContent className="flex-1 flex flex-col p-2">{renderItem(item)}</CardContent>
         </Card>
       ))}
     </div>

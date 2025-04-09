@@ -26,7 +26,7 @@ const Header = ({ search, setSearch, onBack, showBack = false }: HeaderProps) =>
         <header className="p-5 text-center bg-black text-white rounded-b-xl shadow-xl fixed top-0 left-0 right-0 z-50">
             <SideLayout side="between">
                 <div className='flex space-x-2 flex-col'>
-                <div className="font-black">
+                <div className="font-black text-xl md:text-2xl">
                     $HO₽_HU₿
                 </div>
                 {/* {id &&  */}
@@ -48,15 +48,16 @@ const Header = ({ search, setSearch, onBack, showBack = false }: HeaderProps) =>
                 }
 
                 {!isAuth && <AuthSheet />}
-                <div className='flex'>
+
+                <div className='flex items-center space-x-3'>
                     <BasketTool />
                     <PopoverAvatar />
                 </div>
-
             </SideLayout>
-            <div className="flex flex-col">
-                <h1 >Consume, Obey, Buy</h1>
-                <h2>Here</h2>
+
+            <div className="flex flex-col text-center">
+                <h1 className="text-xl font-bold">Consume, Obey, Buy</h1>
+                <h2 className="text-sm">Here</h2>
             </div>
         </header>
     )

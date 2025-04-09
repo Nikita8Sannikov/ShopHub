@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { Product } from '@/types/types'
+import { CartItem, Product } from '@/types/types'
 import { RootState } from '@/store';
 
 import { Button } from '../ui/button';
@@ -12,8 +12,8 @@ interface ProductCardProps {
     product: Product;
     onAdd: (item: Product) => void;
     onDelete: (item: Product) => void;
-    onPlus: (item: Product) => void;
-    onMinus: (item: Product) => void;
+    onPlus: (item: CartItem) => void;
+    onMinus: (item: CartItem) => void;
     link: string;
 }
 
@@ -30,18 +30,18 @@ const ProductCard = ({ product, onAdd, onPlus, onMinus, onDelete, link }: Produc
         onMinus: onMinus
     };
     return (
-        <>{link ? (
-            <Link to={link}>
-                <ProductCardItem product={product} />
-
-
-
-            </Link>
-        ) : (
-            <ProductCardItem product={product} />
-        )}
-            <CardFooter className="flex justify-between">
-                {isInCart ? (
+        <div className="flex flex-col h-full ">
+            {link ? (
+                <Link to={link} className="flex-grow">
+                    <ProductCardItem product={product} />
+                </Link>
+            ) : (
+                <div className="flex-grow">
+                    <ProductCardItem product={product} />
+                </div>
+            )}
+            <CardFooter className="p-0 mt-auto flex gap-2 flex-wrap">
+                {isInCart && item ? (
                     <>
                         <Button onClick={() => callbacks.onMinus(item)}>-</Button>
                         <span>{item?.amount}</span>
@@ -54,10 +54,10 @@ const ProductCard = ({ product, onAdd, onPlus, onMinus, onDelete, link }: Produc
                     </Button>
                 )}
                 {user?.isAdmin &&
-                    <Button onClick={() => callbacks.onDelete(product)}>Del</Button>
+                    <Button variant="destructive" onClick={() => callbacks.onDelete(product)}>Удалить из базы!</Button>
                 }
             </CardFooter>
-        </>
+        </div>
     )
 }
 
