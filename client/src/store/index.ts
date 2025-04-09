@@ -1,8 +1,6 @@
 import { configureStore, Middleware } from '@reduxjs/toolkit'
-import usersReducer from './reducers/users/usersSlice'
 import authSlice from './reducers/auth/authSlice'
 import cartReducer from './reducers/cart/cartSlice'
-import modalReducer from './reducers/modal/modalSlice'
 import goodsSlice from './reducers/goods/goodsSlice'
 
 const loggerMiddleware: Middleware = (storeAPI) => (next) => (action: unknown) => {
@@ -23,10 +21,8 @@ const loggerMiddleware: Middleware = (storeAPI) => (next) => (action: unknown) =
 
 export const store = configureStore({
     reducer: {
-        users: usersReducer,
         auth: authSlice,
         cart: cartReducer,
-        modal: modalReducer,
         goods: goodsSlice,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(loggerMiddleware)
