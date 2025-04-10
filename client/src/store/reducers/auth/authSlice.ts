@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { LoginState, User } from "@/types/types";
+import {SERVER_API_URL} from "../../../utils/utils";
 
 export const signIn = createAsyncThunk<User, { email: string; password: string}>(
     "auth/signIn",
     async (data: {
         email: string; password: string,
     }) => {
-        const response = await fetch("/api/auth/login", {
+        const response = await fetch(`${SERVER_API_URL}/api/auth/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -25,7 +26,7 @@ export const signIn = createAsyncThunk<User, { email: string; password: string}>
 export const signOut = createAsyncThunk<User, void>(
     "auth/signOut",
     async () => {
-        const response = await fetch("/api/auth/logout", {
+        const response = await fetch(`${SERVER_API_URL}/api/auth/logout`, {
             method: "POST",
             credentials: "include"
         })
@@ -41,7 +42,7 @@ export const signOut = createAsyncThunk<User, void>(
 export const register = createAsyncThunk<User, { email: string; password: string, name: string }>(
     "auth/register",
     async (data: { email: string; password: string, name: string }) => {
-        const response = await fetch("/api/auth/register", {
+        const response = await fetch(`${SERVER_API_URL}/api/auth/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -61,9 +62,7 @@ export const register = createAsyncThunk<User, { email: string; password: string
 export const remind = createAsyncThunk<User, void>(
     "auth/remind",
     async () => {
-       
-
-        const response = await fetch("/api/auth/me", {
+        const response = await fetch(`${SERVER_API_URL}/api/auth/me`, {
             method: "GET",
             credentials: "include"
         })

@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CartItem, CartState, Product } from "@/types/types";
+import {SERVER_API_URL} from "../../../utils/utils";
 
-export const fetchCartByUserId = createAsyncThunk<CartItem[], string>(
+export const fetchCartByUserId = createAsyncThunk<CartItem[], string | undefined>(
     "cart/fetchCartByUserId",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await fetch("/api/cart/cartlist", {
+            const response = await fetch(`${SERVER_API_URL}/api/cart/cartlist`, {
                 credentials: "include"
             })
             const data = await response.json()
@@ -15,7 +16,9 @@ export const fetchCartByUserId = createAsyncThunk<CartItem[], string>(
                 filteredData = data.filter((item: { userId: string; }) => item.userId === id)
 
             } else {
-                const guestResponse = await fetch("/api/cart/get-cookie", { credentials: "include" });
+                const guestResponse = await fetch(`${SERVER_API_URL}/api/cart/get-cookie`, {
+                    credentials: "include"
+                });
                 const guestData = await guestResponse.json();
                 const guestId = guestData.guestId;
 
@@ -40,8 +43,9 @@ export const addToCart = createAsyncThunk<CartItem, { product: Product; userId?:
     "cart/addToCart",
     async ({ product, userId }, { rejectWithValue }) => {
         try {
-            const response = await fetch("/api/cart/add", {
+            const response = await fetch(`${SERVER_API_URL}/api/cart/add`, {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -69,7 +73,7 @@ export const deleteFromCart = createAsyncThunk<string, string>(
     "cart/deleteFromCart",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await fetch(`/api/cart/${id}`, {
+            const response = await fetch(`${SERVER_API_URL}/api/cart/${id}`, {
                 method: "DELETE",
             });
             const data = await response.json();
@@ -90,7 +94,7 @@ export const patchAmountCart = createAsyncThunk<CartItem, { id: string; action: 
     "cart/patchAmount",
     async ({ id, action }, { rejectWithValue }) => {
         try {
-            const response = await fetch(`/api/cart/${id}`, {
+            const response = await fetch(`${SERVER_API_URL}/api/cart/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

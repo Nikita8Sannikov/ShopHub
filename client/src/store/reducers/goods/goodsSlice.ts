@@ -1,10 +1,11 @@
 import { GoodsState, Product } from "@/types/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {SERVER_API_URL} from "../../../utils/utils";
 
 export const fetchGoods = createAsyncThunk<Product[], void>(
     "goods/fetchGoods",
     async () => {
-        const response = await fetch("/api/goods/productslist")
+        const response = await fetch(`${SERVER_API_URL}/api/goods/productslist`)
         const data = await response.json()
         return data
     }
@@ -13,7 +14,7 @@ export const fetchGoods = createAsyncThunk<Product[], void>(
 export const fetchGoodsById = createAsyncThunk<Product, string>(
     "goods/fetchGoodsById",
     async (id) => {
-        const response = await fetch(`/api/goods/${id}`)
+        const response = await fetch(`${SERVER_API_URL}/api/goods/${id}`)
         if (!response.ok) {
             throw new Error("Failed to fetch user");
         }
@@ -26,7 +27,7 @@ export const createProduct = createAsyncThunk(
     "goods/createProduct",
     async (formData: FormData, { rejectWithValue }) => {
         try {
-            const response = await fetch("/api/goods/create", {
+            const response = await fetch(`${SERVER_API_URL}/api/goods/create`, {
                 method: "POST",
                 body: formData,
             });
@@ -49,7 +50,7 @@ export const updateProduct = createAsyncThunk(
     "goods/updateProduct",
     async (formData: FormData, { rejectWithValue }) => {
         try {
-            const response = await fetch(`/api/goods/${formData.get("_id")}`, {
+            const response = await fetch(`${SERVER_API_URL}/api/goods/${formData.get("_id")}`, {
                 method: "PATCH",
                 body: formData,
             });
@@ -72,7 +73,7 @@ export const deleteProduct = createAsyncThunk(
     "goods/deleteProduct",
     async (id: string, { rejectWithValue }) => {
         try {
-            const response = await fetch(`/api/goods/${id}`, {
+            const response = await fetch(`${SERVER_API_URL}/api/goods/${id}`, {
                 method: "DELETE",
             });
 
