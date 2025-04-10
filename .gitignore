@@ -22,6 +22,7 @@ dist-ssr
 *.sln
 *.sw?
 .env
+.env.production
 
 /config/default.json
 
