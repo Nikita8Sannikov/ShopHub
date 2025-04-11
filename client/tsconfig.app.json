@@ -1,40 +1,13 @@
 {
+  "extends": "./tsconfig.json",    // Наследуем настройки из основного tsconfig
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    
-    /* Bundler mode */
-    "moduleResolution": "Bundler",
-    "allowImportingTsExtensions": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "jsx": "react-jsx",
-
-    /* Shadcn */
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noEmit": false,               // Разрешаем генерацию файлов
+    "outDir": "./dist",            // Указываем директорию для выводных файлов
+    "declaration": true,           // Включаем генерацию .d.ts файлов
+    "declarationMap": true,        // Генерация карт для деклараций
+    "sourceMap": true              // Генерация карт исходных файлов для дебагинга
   },
   "include": [
-    "src"
+    "src/**/*"
   ]
 }

@@ -12,9 +12,9 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/uploads": "http://localhost:5000",
+      "/uploads": "http://localhost:5001",
       '/api': {
-        target: 'http://localhost:5000/', // URL вашего API
+        target: 'http://localhost:5001/', // URL вашего API
         changeOrigin: true,            // Меняет источник (Origin) запроса
         secure: false,                 // Если вы используете HTTPS и у вас есть проблемы с сертификатом
         // rewrite: (path) => path.replace(/^\/api/, ''), // Переписывает URL, если нужно

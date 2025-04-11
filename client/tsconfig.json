@@ -1,13 +1,29 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ],
   "compilerOptions": {
-    "baseUrl": ".",
+    "module": "esnext",             // Используем модули ESNext
+    "target": "esnext",             // Указываем целевой стандарт ECMAScript
+    "baseUrl": ".",                 // Базовый путь
     "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+      "@/*": ["./src/*"]            // Псевдоним для упрощения импорта
+    },
+    "declaration": true,            // Включаем генерацию .d.ts файлов
+    "declarationMap": true,         // Генерация карт для деклараций
+    "outDir": "./dist",             // Выходная директория
+    "esModuleInterop": true,        // Совместимость с модулями ES
+    "skipLibCheck": true,           // Пропускаем проверку типов в библиотеках
+    "strict": true,                 // Включаем строгую проверку типов
+    "moduleResolution": "node",     // Разрешение модулей как в Node.js
+    "jsx": "react-jsx"              // Поддержка JSX синтаксиса для React
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"                  // Включаем все файлы с расширением .tsx/.ts и декларации типов для корректной проверки типов
+  ],
+  "exclude": [
+    "node_modules", 
+    "dist",                         // Исключаем папку с библиотеками проекта, папку с итоговой сборкой продакшена, папки и файлы с тестами, папку с конфигурацией nginx
+    "__tests__", 
+    "**/*.test.ts", 
+    "nginx"
+  ]
 }

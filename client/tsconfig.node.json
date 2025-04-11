@@ -1,24 +1,14 @@
 {
+  "extends": "./tsconfig.json",    // Наследуем настройки из основного tsconfig
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-    "target": "ES2022",
-    "lib": ["ES2023"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "Bundler",
-    "allowImportingTsExtensions": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noEmit": true,                // Не генерировать файлы
+    "target": "ES2022",            // Указываем целевой стандарт ECMAScript
+    "lib": ["ES2023"],             // Используем библиотеки для современных стандартов
+    "moduleResolution": "node",    // Разрешение модулей как в Node.js
+    "skipLibCheck": true,          // Пропускаем проверку библиотек
+    "strict": true                 // Включаем строгую проверку типов
   },
-  "include": ["vite.config.ts"]
+  "include": [
+    "vite.config.ts"               // Включаем только необходимые файлы
+  ]
 }
