@@ -2,24 +2,24 @@
 services:
   server:
     build:
-      context: ./server  #Указываем название на рабочую директорию сервера из файла конфигурации docker
-      dockerfile: Dockerfile  # путь к Dockerfile сервера
-    container_name: shop_server    # Наименование контейнера сервера докера (для последующей отладки)
+      context: ./server                    #Указываем название на рабочую директорию сервера из файла конфигурации docker
+      dockerfile: Dockerfile               # путь к Dockerfile сервера
+    container_name: shop_server            # Наименование контейнера сервера докера (для последующей отладки)
     ports:
       - "5001:5001"
     networks:
       - app_network
     env_file:
-      - ./server/.env  # Использование .env файла
+      - ./server/.env                      # Использование .env файла
     environment:
-      - NODE_ENV=production  # Переменная окружения    
+      - NODE_ENV=production                # Переменная окружения
 
-   # Сервис балансировщика nginx
+# Сервис балансировщика nginx
   nginx:
     build:
       context: ./client
       dockerfile: Dockerfile
-    container_name: messanger_nginx     
+    container_name: shop_nginx
     ports:
       - "5002:80"                         # Указываем соответствие между портами: 5000 (внешний порт nginx), 80 - внутренний порт контейнера - для http соединения
     networks:

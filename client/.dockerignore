@@ -1,0 +1,29 @@
+# node_modules
+node_modules
+
+# логи
+*.log
+logs
+npm-debug.log*
+
+# Git
+.git
+.gitignore
+
+# # локальные конфиги
+# .env
+# *.env
+# .env.production
+
+# Docker
+Dockerfile
+.dockerignore
+
+# IDE и системное
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+build
+dist
