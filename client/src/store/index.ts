@@ -2,6 +2,7 @@ import { configureStore, Middleware } from '@reduxjs/toolkit'
 import authSlice from './reducers/auth/authSlice'
 import cartReducer from './reducers/cart/cartSlice'
 import goodsSlice from './reducers/goods/goodsSlice'
+import categoriesReducer from "./reducers/categories/categoriesSlice";
 
 const loggerMiddleware: Middleware = (storeAPI) => (next) => (action: unknown) => {
     const actionType = (action as { type?: string }).type ?? 'unknown action';
@@ -22,6 +23,7 @@ const loggerMiddleware: Middleware = (storeAPI) => (next) => (action: unknown) =
 export const store = configureStore({
     reducer: {
         auth: authSlice,
+        categories: categoriesReducer,
         cart: cartReducer,
         goods: goodsSlice,
     },

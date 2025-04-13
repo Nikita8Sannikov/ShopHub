@@ -47,6 +47,17 @@ export interface CartState {
     totalPrice: number,
 }
 
+export interface Category {
+    _id: string;
+    name: string;
+};
+
+export interface CategoryState {
+    categories: Category[];
+    status: "idle" | "loading" | "fulfilled" | "failed";
+    error: string | null;
+};
+
 export type AuthFormValues = {
     name?: string;
     email: string;
