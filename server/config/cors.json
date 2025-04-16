@@ -1,6 +1,6 @@
 {
     "allowedOrigins": {
       "development": ["http://localhost:5173"],
-      "production": ["http://localhost:5002"]
+      "production": ["http://localhost:5002", "https://shophub-nginx-v1-1.onrender.com"]
     }
   }
