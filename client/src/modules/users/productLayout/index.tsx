@@ -3,67 +3,75 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AppDispatch, RootState } from "../../../store";
-import { addItem, fetchProductsById, removeItem } from "@/store/reducers/cart/cartSlice";
-import { openModal } from "@/store/reducers/modal/modalSlice";
-import { Product } from "@/types/types";
-import PageLayout from "@/components/page-layout";
+import { addToCart, fetchCartByUserId, patchAmountCart } from "@/store/reducers/cart/cartSlice";
+import { fetchGoodsById } from "@/store/reducers/goods/goodsSlice";
+import { CartItem, Product } from "@/types/types";
+import PageLayout from "@/components/pageLayout";
 import Header from "@/components/header";
 import ProductPage from "@/components/productPage";
+import Spinner from "@/components/spinner";
 
 const ProductLayout: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const { id } = useParams();
     const navigate = useNavigate();
-    const product = useSelector((state: RootState) => state.cart.product);
+    const product = useSelector((state: RootState) => state.goods.product);
     const status = useSelector((state: RootState) => state.cart.status);
     const error = useSelector((state: RootState) => state.cart.error);
+    const user = useSelector((state: RootState) => state.auth.user);
 
     useEffect(() => {
-        dispatch(fetchProductsById(Number(id)));
-    }, [dispatch, id]);
+        dispatch(fetchGoodsById(id!));
+        // if (id && user?._id) {
+            dispatch(fetchCartByUserId(user?._id));
+        // }
+    }, [dispatch, id, user?._id]);
 
 
     const callbacks = {
-        onOpen: () => {
-            dispatch(openModal("basket"));
-        },
         onAdd:
-            (item: Product) => {
-                dispatch(addItem(item));
+            (product: Product) => {
+                console.log(user);
+                dispatch(addToCart({ product, userId: user?._id }));
             },
         onBack: () => {
-            navigate("/");
+            navigate("/list");
         },
         onEdit: () => {
             navigate(`/edit/${id}`);
         },
-        removeItem:
-            (item: Product) => {
-                console.log(`Удаление товара ${JSON.stringify(item.title)}`);
-                dispatch(removeItem(item));
+        onPlus:
+            (product: CartItem) => {
+                console.log("onPlus called with:", product);
+                dispatch(patchAmountCart({ id: product._id, action: 'increase' }));
+            },
+        onMinus:
+            (product: CartItem) => {
+                dispatch(patchAmountCart({ id: product._id, action: 'decrease' }))
+                    .unwrap()
+                    .then(() => {
+                        // if (user?._id) {
+                            dispatch(fetchCartByUserId(user?._id));  // Загружаем обновлённую корзину
+                        // } else {
+                        //     console.error("User ID is undefined");
+                        // }
+                    });
             },
     };
 
-    // const renders = {
-    // 	item: 
-    // 		(item: Product) => {
-    // 			return (
-    // 				<ProductCard
-    // 					product={item}
-    // 					callback={callbacks.onAdd}
-    // 					link={`/products/${item.id}`}
-    // 				/>
-    // 			);
-    // 		},
-    // };
-
     return (
         <PageLayout>
-            <Header onBack={callbacks.onBack} />
-            {status === "loading" && <div>Загрузка...</div>}
+            <Header showBack={true} onBack={callbacks.onBack} />
+            {status === "loading" && <div><Spinner /></div>}
             {status === "failed" && <div>Ошибка: {error}</div>}
             {product && (
-                <ProductPage product={product} onAdd={callbacks.onAdd} onEdit={callbacks.onEdit} onRemove={callbacks.removeItem} />
+                <ProductPage
+                    product={product}
+                    onAdd={callbacks.onAdd}
+                    onEdit={callbacks.onEdit}
+                    onPlus={callbacks.onPlus}
+                    onMinus={callbacks.onMinus}
+                />
             )}
         </PageLayout>
     );
