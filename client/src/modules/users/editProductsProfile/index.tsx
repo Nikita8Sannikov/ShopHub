@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Header from "@/components/header";
+import { CategorySelect } from "@/components/categorySelect";
 
 interface IForm {
 	title: string;
@@ -58,7 +59,8 @@ const EditProductsProfile = () => {
 
 			setForm({
 				title: data.title || "",
-				category: data.category || "",
+				// category: data.category || "",
+				category: typeof data.category === "object" ? (data.category as { _id: string })._id : data.category,
 				description: data.description || "",
 				price: data.price || 0,
 				rating: data.rating || 0,
@@ -92,19 +94,19 @@ const EditProductsProfile = () => {
 			formData.append("image", form.image);
 		}
 
-		try{
+		try {
 			let result;
 
-			if(id){
-				formData.append("_id", id); 
+			if (id) {
+				formData.append("_id", id);
 				result = await dispatch(updateProduct(formData)).unwrap();
-			}else{
+			} else {
 				result = await dispatch(createProduct(formData)).unwrap();
 			}
 
 			navigate(`/products/${result._id}`);
-		}catch(e){
-			if(e instanceof Error){
+		} catch (e) {
+			if (e instanceof Error) {
 				alert("Ошибка при сохранении данных" + e);
 			}
 		}
@@ -134,12 +136,9 @@ const EditProductsProfile = () => {
 							className="mb-4"
 						/>
 
-						<Input type="text"
-							name="category"
-							placeholder="Категория"
+						<CategorySelect
 							value={form.category}
-							onChange={changeHandler}
-							className="mb-4"
+							onChange={(id) => setForm({ ...form, category: id })}
 						/>
 
 						<Textarea
