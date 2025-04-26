@@ -25,24 +25,20 @@ const Header = ({ search, setSearch, onBack, showBack = false }: HeaderProps) =>
     return (
         <header className="p-5 text-center bg-black text-white rounded-b-xl shadow-xl fixed top-0 left-0 right-0 z-50">
             <SideLayout side="between">
-                <div className='flex space-x-2 flex-col'>
-                <div className="font-black text-xl md:text-2xl">
-                    $HO₽_HU₿
-                </div>
-                {/* {id &&  */}
-                {showBack &&
-                <Button onClick={onBack}>Назад</Button>
-                }
-                {/* } */}
-                {/* onClick={()=>window.history.back()} variant="secondary" */}
+                <div className='flex md:flex-row items-center space-x-2 md:space-x-4 flex-col md:flex-nowrap'>
+                    <div className="font-black text-xl md:text-2xl">
+                        $HO₽_HU₿
+                    </div>
+                    {showBack &&
+                        <Button onClick={onBack}>Назад</Button>
+                    }
                 </div>
                 {!id &&
-                    <div>
+                    <div >
                         <Input type="text"
                             placeholder="Я ищу.."
                             value={search}
                             onChange={(e) => setSearch?.(e.target.value)}
-                        // className="w-80"
                         />
                     </div>
                 }
