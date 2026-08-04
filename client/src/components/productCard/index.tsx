@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { CartItem, Product } from '@/types/types'
 import { RootState } from '@/store';
+import { isPendingCartItem } from '@/store/reducers/cart/cartSlice';
 
 import { Button } from '../ui/button';
 import ProductCardItem from '../productCardItem';
@@ -22,6 +23,7 @@ const ProductCard = ({ product, onAdd, onPlus, onMinus, onDelete, link }: Produc
     const items = useSelector((state: RootState) => state.cart.items);
     const isInCart = items.some((item) => item.goodsId === product._id);
     const item = items.find((item) => item.goodsId === product._id);
+    const isPending = item ? isPendingCartItem(item) : false;
 
     const callbacks = {
         onAdd: onAdd,
@@ -43,9 +45,9 @@ const ProductCard = ({ product, onAdd, onPlus, onMinus, onDelete, link }: Produc
             <CardFooter className="p-0 mt-auto flex gap-2 flex-wrap">
                 {isInCart && item ? (
                     <>
-                        <Button onClick={() => callbacks.onMinus(item)}>-</Button>
+                        <Button disabled={isPending} onClick={() => callbacks.onMinus(item)}>-</Button>
                         <span>{item?.amount}</span>
-                        <Button onClick={() => callbacks.onPlus(item)}>+</Button>
+                        <Button disabled={isPending} onClick={() => callbacks.onPlus(item)}>+</Button>
                     </>
                 ) : (
                     <Button

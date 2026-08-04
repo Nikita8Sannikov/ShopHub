@@ -2,6 +2,11 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CartItem, CartState, Product } from "@/types/types";
 import {SERVER_API_URL} from "../../../utils/utils";
 
+export const PENDING_CART_ITEM_PREFIX = "pending-";
+
+export const isPendingCartItem = (item: CartItem) =>
+    item._id.startsWith(PENDING_CART_ITEM_PREFIX);
+
 export const fetchCartByUserId = createAsyncThunk<CartItem[], string | undefined>(
     "cart/fetchCartByUserId",
     async (id, { rejectWithValue }) => {
@@ -66,6 +71,12 @@ export const addToCart = createAsyncThunk<CartItem, { product: Product; userId?:
                 return rejectWithValue(error.message);
             }
         }
+    },
+    {
+        condition: ({ product }, { getState }) => {
+            const state = getState() as { cart: CartState };
+            return !state.cart.items.some((item) => item.goodsId === product._id);
+        },
     }
 )
 
@@ -143,16 +154,36 @@ const cartSlice = createSlice({
             .addCase(fetchCartByUserId.rejected, (state) => {
                 state.status = "failed"
             })
-            .addCase(addToCart.pending, (state) => {
-                state.status = "loading"
+            .addCase(addToCart.pending, (state, action) => {
+                const goodsId = action.meta.arg.product._id;
+                if (state.items.some((item) => item.goodsId === goodsId)) {
+                    return;
+                }
+                state.items.push({
+                    _id: `${PENDING_CART_ITEM_PREFIX}${goodsId}`,
+                    goodsId,
+                    amount: 1,
+                });
+                state.status = "loading";
             })
             .addCase(addToCart.fulfilled, (state, action: PayloadAction<CartItem>) => {
-                state.items = [...state.items, { ...action.payload, amount: 1 }];
+                const goodsId = action.payload.goodsId;
+                state.items = state.items.filter((item) => item.goodsId !== goodsId);
+                state.items.push({
+                    ...action.payload,
+                    amount: action.payload.amount ?? 1,
+                });
                 state.status = "succeeded";
+                state.error = null;
             })
             .addCase(addToCart.rejected, (state, action) => {
-                state.status = "failed"
-                state.error = action.error.message || "Error"
+                const goodsId = action.meta.arg.product._id;
+                state.items = state.items.filter((item) => item.goodsId !== goodsId);
+                state.status = "failed";
+                state.error =
+                    typeof action.payload === "string"
+                        ? action.payload
+                        : action.error.message || "Error";
             })
             .addCase(deleteFromCart.pending, (state) => {
                 state.status = "loading"

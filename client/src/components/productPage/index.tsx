@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import { RootState } from "@/store";
+import { isPendingCartItem } from "@/store/reducers/cart/cartSlice";
 import { SERVER_API_URL } from "@/utils/utils";
 import { CartItem, Product } from "../../types/types";
 import { Button } from "../ui/button";
@@ -18,6 +19,7 @@ const ProductPage: React.FC<ProductPageProps> = ({ product, onAdd, onEdit, onPlu
     const items = useSelector((state: RootState) => state.cart.items);
     const isInCart = items.some((item) => item.goodsId === product._id);
     const item = items.find((item) => item.goodsId === product._id);
+    const isPending = item ? isPendingCartItem(item) : false;
 
     const categories = useSelector((state: RootState) => state.categories.categories);
     const categoryObj = categories.find(c => c._id === product.category || c.name.toLowerCase() === product.category.toLowerCase());
@@ -48,9 +50,23 @@ const ProductPage: React.FC<ProductPageProps> = ({ product, onAdd, onEdit, onPlu
             <div className="flex items-center gap-4">
                 {isInCart && item ? (
                     <div className="flex items-center gap-2">
-                        <Button size="sm" variant="outline" onClick={() => callbacks.onMinus(item)}>-</Button>
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={isPending}
+                            onClick={() => callbacks.onMinus(item)}
+                        >
+                            -
+                        </Button>
                         <span>{item?.amount}</span>
-                        <Button size="sm" variant="outline" onClick={() => callbacks.onPlus(item)}>+</Button>
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={isPending}
+                            onClick={() => callbacks.onPlus(item)}
+                        >
+                            +
+                        </Button>
                     </div>
                 ) : (
                     <Button
