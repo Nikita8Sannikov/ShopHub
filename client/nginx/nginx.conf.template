@@ -8,6 +8,9 @@ events {
 
 # Начало конфигурации сервера nginx
 http {
+    resolver 8.8.8.8 1.1.1.1 valid=30s;
+    resolver_timeout 5s;
+
     include       mime.types;                       # Сообщаем nginx включить файл mime.types
     default_type  application/octet-stream;         # Директива типа контента по умолчанию (если nginx не находит тип файла в mime.types)
 
@@ -39,8 +42,10 @@ http {
             # proxy_pass  https://shophub-server-v1-1.onrender.com;  # Имя контейнера сервера (Express)
             # proxy_pass  https://shophub-server-production.up.railway.app;  # Имя контейнера сервера (Express)
             proxy_pass ${BACKEND_URL};  # Имя контейнера сервера (Express)
+            proxy_ssl_server_name on;
 
-            proxy_set_header Host $host;                                          # Установка заголовка Host в запросе
+            # proxy_set_header Host $host;                                          # Установка заголовка Host в запросе
+            proxy_set_header Host shophub-server-v1-1.onrender.com;
             proxy_set_header X-Real-IP $remote_addr;                              # Установка заголовка X-Real-IP (реальный IP-адрес) в запросе
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;          # Установка заголовка X-Forwarded-For (передача используемых прокси-серверов) в запросе
             proxy_set_header X-Forwarded-Proto $scheme;                           # Установка заголовка X-Forwarded-Proto (какой протокол используется - http или https) в запросе
@@ -68,8 +73,10 @@ http {
             #   proxy_pass  https://shophub-server-v1-1.onrender.com;  # Имя контейнера сервера (Express)
             #   proxy_pass  https://shophub-server-production.up.railway.app;  # Имя контейнера сервера (Express)
             proxy_pass ${BACKEND_URL};  # Имя контейнера сервера (Express)
-        
-            proxy_set_header Host $host;                                          # Установка заголовка Host в запросе
+            proxy_ssl_server_name on;
+
+            # proxy_set_header Host $host;                                          # Установка заголовка Host в запросе
+            proxy_set_header Host shophub-server-v1-1.onrender.com;
             proxy_set_header X-Real-IP $remote_addr;                              # Установка заголовка X-Real-IP (реальный IP-адрес) в запросе
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;          # Установка заголовка X-Forwarded-For (передача используемых прокси-серверов) в запросе
             proxy_set_header X-Forwarded-Proto $scheme;                           # Установка заголовка X-Forwarded-Proto (какой протокол используется - http или https) в запросе
