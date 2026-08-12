@@ -23,5 +23,3 @@ dist-ssr
 *.sw?
 .env
 .env.production
-
-/config/default.json

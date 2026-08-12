@@ -26,8 +26,10 @@ services:
       - app_network                       # Указываем способ общения с другими сервисами
     depends_on:
       - server                            # Запускаем данный сервис только после успешного запуска сервиса server   
-    volumes:
-      - ./client/nginx/nginx.conf:/etc/nginx/nginx.conf  # Прокси-конфигурация Nginx
+    # volumes:
+    #   - ./client/nginx/nginx.conf:/etc/nginx/nginx.conf  # Прокси-конфигурация Nginx
+    environment:
+      - BACKEND_URL=http://server:5001  
 
 # Данное поле необходимо для установки общения между сервисами
 networks:

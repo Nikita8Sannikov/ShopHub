@@ -35,8 +35,11 @@ http {
 
         # Проксирование API-запросов на сервер (Express)
         location /api/ {
-            proxy_pass  http://server:5001/;  # Имя контейнера сервера (Express)
-        
+            # proxy_pass  http://server:5001/;  # Имя контейнера сервера (Express)
+            # proxy_pass  https://shophub-server-v1-1.onrender.com;  # Имя контейнера сервера (Express)
+            # proxy_pass  https://shophub-server-production.up.railway.app;  # Имя контейнера сервера (Express)
+            proxy_pass ${BACKEND_URL};  # Имя контейнера сервера (Express)
+
             proxy_set_header Host $host;                                          # Установка заголовка Host в запросе
             proxy_set_header X-Real-IP $remote_addr;                              # Установка заголовка X-Real-IP (реальный IP-адрес) в запросе
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;          # Установка заголовка X-Forwarded-For (передача используемых прокси-серверов) в запросе
@@ -61,7 +64,10 @@ http {
         }
 
         location /uploads/ {
-              proxy_pass  http://server:5001/;  # Имя контейнера сервера (Express)
+            #   proxy_pass  http://server:5001/;  # Имя контейнера сервера (Express)
+            #   proxy_pass  https://shophub-server-v1-1.onrender.com;  # Имя контейнера сервера (Express)
+            #   proxy_pass  https://shophub-server-production.up.railway.app;  # Имя контейнера сервера (Express)
+            proxy_pass ${BACKEND_URL};  # Имя контейнера сервера (Express)
         
             proxy_set_header Host $host;                                          # Установка заголовка Host в запросе
             proxy_set_header X-Real-IP $remote_addr;                              # Установка заголовка X-Real-IP (реальный IP-адрес) в запросе

@@ -28,8 +28,11 @@ WORKDIR /root
 COPY --from=build /client/dist /usr/share/nginx/html
 
 # Копируем конфигурацию Nginx 
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
+# COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
+COPY nginx/nginx.conf.template /etc/nginx/templates/nginx.conf.template
+
+ENV NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx
 # Экспонируем 80 порт
 # EXPOSE 80
 
