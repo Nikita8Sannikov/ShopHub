@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 
-import { Category } from "@/modules/users/productsList"
+// import { Category } from "@/modules/users/productsList"
 import { RootState } from "@/store";
 import { CategoryDialog } from "../categoryDialog";
 import {
@@ -8,9 +8,10 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { Product } from "@/types/types";
 
 interface CategoryTabsProps {
-  setActiveCategory: (category: Category) => void;
+  setActiveCategory: (category: Product["category"]) => void;
 }
 
 export function CategoryTabs({ setActiveCategory }: CategoryTabsProps) {
@@ -21,7 +22,7 @@ export function CategoryTabs({ setActiveCategory }: CategoryTabsProps) {
   return (
     <Tabs defaultValue="all"
       className="w-[300px] shrink-0"
-      onValueChange={(value) => setActiveCategory(value as Category)}>
+      onValueChange={(value) => setActiveCategory(value as Product["category"])}>
       <TabsList className="grid w-full grid-cols-2  bg-transparent sticky top-[130px] ">
 
         {categories.map((category) => (
