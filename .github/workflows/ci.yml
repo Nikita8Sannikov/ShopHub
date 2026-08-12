@@ -115,3 +115,9 @@ jobs:
           tags: |
             letoiledunord/shophub-nginx:latest
             letoiledunord/shophub-nginx:${{ github.sha }}
+      
+      - name: Deploy server on Render
+        run: 'curl -X POST "${{ secrets.RENDER_SERVER_DEPLOY_HOOK }}&imgURL=docker.io/letoiledunord/shophub-server:${{ github.sha }}"'
+
+      - name: Deploy nginx on Render
+        run: 'curl -X POST "${{ secrets.RENDER_NGINX_DEPLOY_HOOK }}&imgURL=docker.io/letoiledunord/shophub-nginx:${{ github.sha }}"'
