@@ -112,6 +112,8 @@ jobs:
         with:
           context: ./client
           push: true
+          build-args: |
+            VITE_SERVER_API_URL=${{ secrets.VITE_SERVER_API_URL }}
           tags: |
             letoiledunord/shophub-nginx:latest
             letoiledunord/shophub-nginx:${{ github.sha }}

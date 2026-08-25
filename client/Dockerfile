@@ -13,6 +13,9 @@ RUN npm install
 # Копируем исходный код
 COPY . .
 
+ARG VITE_SERVER_API_URL
+ENV VITE_SERVER_API_URL=$VITE_SERVER_API_URL
+
 # Сборка приложения для продакшн
 RUN npm run build
 
