@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 import { RootState } from "@/store";
 import { isPendingCartItem } from "@/store/reducers/cart/cartSlice";
-import { SERVER_API_URL } from "@/utils/utils";
+import { getImageUrl } from "@/utils/utils";
 import { CartItem, Product } from "../../types/types";
 import { Button } from "../ui/button";
 
@@ -39,7 +39,7 @@ const ProductPage: React.FC<ProductPageProps> = ({ product, onAdd, onEdit, onPlu
                 <div className="w-full flex justify-center">
                     <img
                         className="h-[300px] object-contain rounded-xl"
-                        src={`${SERVER_API_URL}${product.image}`}
+                        src={getImageUrl(product.image)}
                         alt={product.title}
                     />
                 </div>

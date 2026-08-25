@@ -1,5 +1,5 @@
 import { Product } from '@/types/types';
-import { SERVER_API_URL } from "@/utils/utils";
+import { getImageUrl } from "@/utils/utils";
 
 interface ProductCardItemProps {
     product: Product
@@ -10,7 +10,7 @@ const ProductCardItem = ({ product }: ProductCardItemProps) => {
             <div className="grid w-full items-center gap-4">
                 <div className="flex flex-col space-y-1.5">
                     <img
-                        src={`${SERVER_API_URL}${product.image}`}
+                        src={getImageUrl(product.image)}
                         alt={`${product.title}`}
                         className="w-[100px] h-[100px] rounded-full"
                     />

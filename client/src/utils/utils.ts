@@ -10,3 +10,6 @@ export const SERVER_API_URL =
         : import.meta.env.VITE_SERVER_API_URL;
 
 // export const SERVER_API_URL = "";
+
+export const getImageUrl = (image: string) =>
+    image.startsWith("http") ? image : `${SERVER_API_URL}${image}`;
